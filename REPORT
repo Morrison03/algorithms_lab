@@ -1,0 +1,57 @@
+Algorithm Lab Report:
+Methodology:
+Tested Selection, Insertion, Merge, and Array sort using randomly generated integer
+arrays. Each input size used 5 untimed warm-up runs and 12 timed trials in order to get
+more reliable results. The execute() call was timed using System.nanoTime(). Selection and
+Insertion sort used a range of sizes from 500 - 8,000 due to their O(n^2) growth becomes
+big quickly. Merge and Arrays sort used sizes 10,000 - 640,000 cause their expected O(n\log
+n) growth allows larger inputs.
+Plots:
+Created one execution-time plot for each algorithm using input size on the x-axis
+and the median execution time on the y-axis. Selection sort compared with (n^2) fitted
+curve. Insertion sort compared with (n^2) fitted curve. Merge sort compared with (n\log n)
+fitted curve. Arrays sort compared with (n\log n) fitted curve.
+Model-fit comparison:
+• Selection sort:
+o Expected model: n^2
+o Best model: n^2
+o MAPE: 28.5743%
+o R
+2
+: 0.834792
+• Insertion sort:
+o Expected model: n^2
+o Best model: n\log n
+o MAPE: 39.8778%
+o R
+2
+: 0.843633
+• Merge sort:
+o Expected model: n\log n
+o Best model: n\log n
+o MAPE: 2.0402%
+o R
+2
+: 0.999469
+• Arrays sort:
+o Expected model: n\log n
+o Best model: n
+o MAPE: 10.1355%
+o R
+2
+: 0.996054
+Reflection:
+My results pretty much matched what I expected, but not completely. Selection sort
+matched the expected O(n^2) growth, and Merge sort matched O(n\log n) really well. Merge
+sort had the best fit overall, with a MAPE of about 2.04% and an R
+2 very close to 1. Insertion
+sort was surprising because n\log n fit better than n^2, and Arrays sort matched a linear
+model better than n\log n for the input sizes I tested. I think some of these differences
+happened because Big-O describes how an algorithm grows in general, not how long it will
+take on one computer. Things like JVM warm-up, JIT compilation, cache behavior, garbage
+collection, and other programs running in the background can affect the timing results.
+Even though I used warm-up runs and repeated trials, there was still some variation in the
+measurements. If I had more time, I would test more input sizes and probably use more
+trials for each size. I would also try more warm-up runs and probably use a tool like JMH to
+get more accurate timing results. Overall, I think that would make the results more
+consistent and make it easier to compare them to the theoretical growth rates.
