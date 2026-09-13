@@ -16,35 +16,26 @@ Model-fit comparison:
 o Expected model: n^2
 o Best model: n^2
 o MAPE: 28.5743%
-o R
-2
-: 0.834792
+o R^2: 0.834792
 • Insertion sort:
 o Expected model: n^2
 o Best model: n\log n
 o MAPE: 39.8778%
-o R
-2
-: 0.843633
+o R^2: 0.843633
 • Merge sort:
 o Expected model: n\log n
 o Best model: n\log n
 o MAPE: 2.0402%
-o R
-2
-: 0.999469
+o R^2: 0.999469
 • Arrays sort:
 o Expected model: n\log n
 o Best model: n
 o MAPE: 10.1355%
-o R
-2
-: 0.996054
+o R^2: 0.996054
 Reflection:
 My results pretty much matched what I expected, but not completely. Selection sort
 matched the expected O(n^2) growth, and Merge sort matched O(n\log n) really well. Merge
-sort had the best fit overall, with a MAPE of about 2.04% and an R
-2 very close to 1. Insertion
+sort had the best fit overall, with a MAPE of about 2.04% and an R^2 very close to 1. Insertion
 sort was surprising because n\log n fit better than n^2, and Arrays sort matched a linear
 model better than n\log n for the input sizes I tested. I think some of these differences
 happened because Big-O describes how an algorithm grows in general, not how long it will
