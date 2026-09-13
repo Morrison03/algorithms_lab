@@ -1,80 +1,137 @@
-# Algorithm Performance Laboratory — Starter Code
+# Algorithm Laboratory 1
 
-This is a starting point, not a solution. It gives you two things:
+## Overview
 
-1. **The two interfaces the rest of your framework should build on**
-   (`Algorithm<T>` and `InputGenerator<T>`), plus some ready-to-use
-   implementations of each so you aren't spending your time re-deriving
-   basic sorting algorithms.
-2. **`NaiveTimingDemo`**, a deliberately bad timing example. Run it a few
-   times (the flaws are easiest to see across repeated runs) before you
-   start designing your own framework. It exists to make two problems
-   concrete instead of abstract:
-   - measuring the *same trial* more than once without regenerating input
-     that the algorithm mutates, and
-   - drawing conclusions from a single, un-warmed-up measurement.
+This project is a reusable Java framework for experimentally measuring and analyzing the performance of algorithms. It tests the supplied Selection Sort, Insertion Sort, Merge Sort, and `Arrays.sort` implementations using randomly generated integer arrays.
 
-   Your framework's job is to not have these problems.
+The framework performs JVM warm-up runs, repeated timed trials, statistical analysis, theoretical growth-model comparison, and CSV export.
 
-Everything lives in the unnamed (default) package.
-That's deliberate: this is exactly the kind of small, self-contained,
-experimental codebase the unnamed package exists for, and it keeps the
-file layout flat and simple.
+## Requirements
 
-## What's provided
+* Java JDK installed
+* No Maven, Gradle, Ant, or IDE-specific setup is required
+* The project can be compiled and run using plain `javac` and `java`
 
-```
-src/
-  Algorithm.java              -- interface: an algorithm under study
-  InputGenerator.java         -- interface: produces inputs of a given size
-  SelectionSort.java          -- O(n^2)
-  InsertionSort.java          -- O(n^2)
-  MergeSort.java               -- O(n log n)
-  ArraysSortWrapper.java      -- wraps java.util.Arrays.sort (JDK dual-pivot quicksort)
-  RandomIntArrayGenerator.java
-  NaiveTimingDemo.java        -- run this first; see above
-```
+## Project Files
 
-## What you need to design and build
+The main framework classes are:
 
-Everything downstream of "I have an `Algorithm` and an `InputGenerator`":
+* `Algorithm.java` — interface implemented by algorithms being tested
+* `InputGenerator.java` — interface for generating test inputs
+* `Measurement.java` — performs warm-up runs and timed trials
+* `PerformanceData.java` — stores timing statistics
+* `Experiment.java` — runs an algorithm across multiple input sizes
+* `Analysis.java` — compares measured data with theoretical growth models
+* `Report.java` — prints results and exports CSV files
+* `BenchmarkMain.java` — runs the full experiment
 
-- **Experiment** — orchestrates running one `Algorithm` against inputs of
-  increasing size produced by an `InputGenerator`.
-- **Measurement** — actually times a run. This is where warm-up, repeated
-  trials, and basic statistics (mean, median, standard deviation — your
-  choice, but justify it) belong.
-- **PerformanceData** — the resulting table of (input size → timing
-  statistics) for one algorithm.
-- **Analysis** — compares the empirical data against a theoretical
-  growth-rate model and reports how well they match.
-- **Report** — produces output a human (or a plotting tool) can use.
-  At minimum, produce a CSV export of size vs. timing statistics.
+The supplied sorting algorithms are:
 
-See the assignment handout for the full requirements and rubric.
+* `SelectionSort.java`
+* `InsertionSort.java`
+* `MergeSort.java`
+* `ArraysSortWrapper.java`
 
-## Building and running
+The supplied input generator is:
 
-Your submission must build and run with nothing but plain `javac`/`java`.
-Grading does not assume Maven, Gradle, Ant, or any particular IDE, so don't
-structure your code in a way that depends on one of them being present.
-The baseline that must always work:
+* `RandomIntArrayGenerator.java`
 
-```bash
+`NaiveTimingDemo.java` is also included to demonstrate problems with reusing mutated inputs and performing only one un-warmed-up timing trial.
+
+## Compile
+
+Open a terminal in the directory containing the `.java` files.
+
+For example:
+
+```text
 cd src
+```
+
+Compile all Java files with:
+
+```text
 javac *.java
+```
+
+If compilation succeeds, no output is normally displayed.
+
+## Run the Naive Timing Demo
+
+To run the provided timing demonstration:
+
+```text
 java NaiveTimingDemo
 ```
 
-If you personally prefer building using Maven, Gradle, or Ant, you're
-welcome to set one up for your own convenience, but that must be in
-addition to the plain `javac`/`java` path working, never in place of it.
-(Note that adopting one of those tools typically means moving these files
-into a package and a `src/main/java/...` layout. That's fine for your own
-setup, but the version you submit still needs the plain-`javac` path to
-work unmodified.)
+This demonstrates why reusing the same array and using only one timing measurement can produce misleading results.
 
------
-## License
+## Run the Full Experiment
 
-This project is open source, &copy; Dr. Jody Paul, and available under the [MIT License](LICENSE.md).
+Run the complete benchmark with:
+
+```text
+java BenchmarkMain
+```
+
+The experiment uses:
+
+* 5 untimed warm-up iterations per input size
+* 12 timed trials per input size
+* Fresh input for every warm-up and timed trial
+* `System.nanoTime()` for timing
+* Timing only around the algorithm's `execute()` method
+
+Selection Sort and Insertion Sort use smaller input sizes because their expected \(O(n^2)\) running time grows quickly. Merge Sort and `Arrays.sort` use larger input sizes because their expected \(O(n \log n)\) growth allows them to handle larger inputs efficiently.
+
+## Output
+
+The program prints timing statistics and growth-model comparisons to the terminal.
+
+CSV files are written to the `results` directory:
+
+```text
+results/
+    Selection_Sort.csv
+    Insertion_Sort.csv
+    Merge_Sort.csv
+    Arrays.sort_JDK_.csv
+```
+
+Each CSV contains:
+
+* Input size
+* Number of timed trials
+* Mean execution time
+* Median execution time
+* Standard deviation
+* Minimum execution time
+* Maximum execution time
+* Fitted \(n\) prediction
+* Fitted \(n \log n\) prediction
+* Fitted \(n^2\) prediction
+
+These files can be opened in Excel, Google Sheets, or another plotting program to create the required execution-time graphs.
+
+## Model Analysis
+
+The program compares each algorithm against three candidate growth models:
+
+* \(O(n)\)
+* \(O(n \log n)\)
+* \(O(n^2)\)
+
+The models are compared using Mean Absolute Percentage Error (MAPE) and \(R^2\). The model with the lowest MAPE is reported as the best fit.
+
+## Expected Theoretical Growth
+
+* Selection Sort: \(O(n^2)\)
+* Insertion Sort on random input: \(O(n^2)\)
+* Merge Sort: \(O(n \log n)\)
+* `Arrays.sort(int[])`: approximately \(O(n \log n)\)
+
+Actual experimental results may differ because of JVM behavior, JIT compilation, CPU caching, garbage collection, operating-system scheduling, constant factors, and the tested input-size range.
+
+## Automated Tool Use
+
+ChatGPT was used to assist with framework design, code organization, timing methodology, model-fit analysis, and report organization. The assignment requirements and supplied starter code were provided as context, and the generated material was reviewed before being incorporated into the project.
